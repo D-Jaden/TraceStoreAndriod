@@ -5,15 +5,21 @@ import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.POST
 
-data class LoginRequest(val username: String, val password: String)
+data class LoginRequest(val username: String,
+                        val password: String)
+data class RegisterRequest(val username: String,
+                           val email: String,
+                           val firstName: String,
+                           val lastName: String,
+                           val age: String,
+                           val GSTIN: String,
+                           val password: String)
 
 interface TraceStoreAPI {
-
-    @POST("register")
-    fun register(@Header("") someVar : String) : Response<String>
+    @POST("signup")
+    suspend fun register(@Body registerRequest : RegisterRequest) : Response<RegisterResponse>
 
     @POST("login")
     suspend fun login(@Body loginRequest: LoginRequest): Response<LoginResponse>

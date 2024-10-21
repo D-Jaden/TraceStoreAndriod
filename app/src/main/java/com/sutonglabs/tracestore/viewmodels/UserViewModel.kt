@@ -17,14 +17,26 @@ open class UserViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _loginState = MutableStateFlow<Result<String>?>(null)
+    private val _registerState = MutableStateFlow<Result<String>?>(null)
     val loginState: StateFlow<Result<String>?> = _loginState
+    val registerState: StateFlow<Result<String>?> = _registerState
 
     fun login(username: String, password: String) {
         viewModelScope.launch {
             _loginState.value = userRepository.login(username, password)
         }
     }
-
+    fun register(username: String,
+                 email: String,
+                 firstName: String,
+                 lastName: String,
+                 age: String,
+                 GSTIN: String,
+                 password: String) {
+        viewModelScope.launch {
+            _registerState.value = userRepository.register(username, email, firstName, lastName, age, GSTIN, password)
+        }
+    }
     val jwtToken: StateFlow<String?> = userRepository.jwtToken
         .stateIn(viewModelScope, SharingStarted.Lazily, null)
 }

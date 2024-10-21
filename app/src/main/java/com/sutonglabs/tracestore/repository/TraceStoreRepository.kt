@@ -7,4 +7,14 @@ class TraceStoreRepository @Inject constructor(private val  apiService: TraceSto
     suspend fun login(username: String, password: String) {
 
     }
+    suspend fun register(username: String,
+                         email: String,
+                         firstName: String,
+                         lastName: String,
+                         age: String,
+                         GSTIN: String,
+                         password: String) {
+
+    }
+
 }

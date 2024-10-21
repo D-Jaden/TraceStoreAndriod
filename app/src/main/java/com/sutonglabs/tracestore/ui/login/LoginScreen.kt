@@ -26,13 +26,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.sutonglabs.tracestore.graphs.auth_graph.AuthScreen
 import com.sutonglabs.tracestore.viewmodels.UserViewModel
 
+// viewModel: UserViewModel = hiltViewModel()
 @Composable
-fun LoginScreen(viewModel: UserViewModel = hiltViewModel()) {
+fun LoginScreen( navController: NavController, viewModel: UserViewModel = hiltViewModel()) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisibility by remember { mutableStateOf(false) }
@@ -85,8 +87,10 @@ fun LoginScreen(viewModel: UserViewModel = hiltViewModel()) {
         loginState?.let { result ->
             if (result.isSuccess) {
                 Text("Login successful! JWT: ${result.getOrNull()}")
+                navController.navigate(AuthScreen.SignInSuccess.route)
             } else {
                 Text("Login failed: ${result.exceptionOrNull()?.message}")
+                navController.navigate(AuthScreen.SignInSuccess.route) //TODO: Handle failed Login
             }
         }
         jwtToken?.let { token ->
@@ -94,11 +98,3 @@ fun LoginScreen(viewModel: UserViewModel = hiltViewModel()) {
         }
     }
 }
-
-
-@Preview(showBackground = true)
-@Composable
-fun LoginScreenPreview() {
-    LoginScreen()
-}
-
