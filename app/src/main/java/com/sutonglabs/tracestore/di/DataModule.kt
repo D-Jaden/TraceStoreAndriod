@@ -1,5 +1,6 @@
 package com.sutonglabs.tracestore.di
 
+import com.sutonglabs.tracestore.api.TraceStoreAPI
 import com.sutonglabs.tracestore.data.DemoDB
 import com.sutonglabs.tracestore.repository.ProductRepository
 import com.sutonglabs.tracestore.repository.ProductRepositoryImp
@@ -14,7 +15,7 @@ import javax.inject.Singleton
 object DataModule {
     @Provides
     @Singleton
-    fun provideProductRepository(demoDB: DemoDB): ProductRepository {
-        return ProductRepositoryImp(demoDB)
+    fun provideProductRepository(traceStoreAPIService: TraceStoreAPI): ProductRepository {
+        return ProductRepositoryImp(traceStoreAPIService)
     }
 }

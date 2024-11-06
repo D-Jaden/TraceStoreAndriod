@@ -29,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import com.sutonglabs.tracestore.models.Product
 import com.sutonglabs.tracestore.viewmodels.DashboardViewModel
+import com.sutonglabs.tracestore.common.Constants
 
 @Composable
 fun DashboardScreen(
@@ -112,7 +113,7 @@ fun ProductCard(product: Product, onItemClick: (Int) -> Unit) {
     ) {
         Column {
             Image(
-                painter = rememberImagePainter("https://upload.wikimedia.org/wikipedia/commons/1/15/Cat_August_2010-4.jpg"), // product.image
+                painter = rememberImagePainter(Constants.BASE_URL + product.image),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
