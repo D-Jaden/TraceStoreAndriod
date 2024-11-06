@@ -164,7 +164,7 @@ fun RegisterScreen(navController: NavHostController, viewModel: UserViewModel = 
         )
         Spacer(modifier = Modifier.height(8.dp))
         Button(
-            onClick = { /* Handle registration logic */ },
+            onClick = { navController.navigate(AuthScreen.SignInScreen.route) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Login")

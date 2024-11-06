@@ -30,7 +30,7 @@ class DashboardViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
-                    _state.value = ProductState(product = result.data ?: emptyList())
+                    _state.value = ProductState(product = result.data?.data ?: emptyList())
                 }
 
                 is Resource.Error -> {

@@ -1,23 +1,22 @@
 package com.sutonglabs.tracestore.use_case
 
 import com.sutonglabs.tracestore.common.Resource
-import com.sutonglabs.tracestore.models.Product
+import com.sutonglabs.tracestore.models.ProductResponse
 import com.sutonglabs.tracestore.repository.ProductRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class GetProductUseCase @Inject constructor(
-    private val productRepository: ProductRepository
+    private val repository: ProductRepository
 ) {
-    operator fun invoke(): Flow<Resource<List<Product>>> = flow {
-        try{
+    operator fun invoke(): Flow<Resource<ProductResponse>> = flow {
+        try {
             emit(Resource.Loading())
-            val products = productRepository.getProduct()?. map { it }
-            emit(Resource.Success(data = products))
+            val products = repository.getProduct()  // Assume this returns a list of products
+            emit(Resource.Success(products))
         } catch (e: Exception) {
-            emit(Resource.Error(message = e.message.toString()))
+            emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
         }
     }
-
 }

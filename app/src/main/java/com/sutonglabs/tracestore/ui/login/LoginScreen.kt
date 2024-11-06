@@ -32,12 +32,20 @@ import androidx.navigation.NavController
 import com.sutonglabs.tracestore.graphs.auth_graph.AuthScreen
 import com.sutonglabs.tracestore.viewmodels.UserViewModel
 
-// viewModel: UserViewModel = hiltViewModel()
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.LaunchedEffect
+
+
 @Composable
 fun LoginScreen( navController: NavController, viewModel: UserViewModel = hiltViewModel()) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisibility by remember { mutableStateOf(false) }
+
+    var showErrorDialog by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+
     val loginState by viewModel.loginState.collectAsState()
     val jwtToken by viewModel.jwtToken.collectAsState()
 
@@ -84,17 +92,44 @@ fun LoginScreen( navController: NavController, viewModel: UserViewModel = hiltVi
         ) {
             Text("Login")
         }
+
+        Spacer(modifier = Modifier.height(6.dp))
+
+        Text(text = "Not Registered Yet?")
+
+        Button(onClick = { navController.navigate(AuthScreen.SignUpScreen.route)}) {
+            Text(text = "Sign Up")
+        }
+        Spacer(modifier = Modifier.height(36.dp))
+
+
         loginState?.let { result ->
             if (result.isSuccess) {
                 Text("Login successful! JWT: ${result.getOrNull()}")
                 navController.navigate(AuthScreen.SignInSuccess.route)
             } else {
-                Text("Login failed: ${result.exceptionOrNull()?.message}")
-                navController.navigate(AuthScreen.SignInSuccess.route) //TODO: Handle failed Login
+                LaunchedEffect(result) {
+                    errorMessage = result.exceptionOrNull()?.message ?: "Unknown error"
+                    showErrorDialog = true
+                }
             }
         }
         jwtToken?.let { token ->
 //            Text("JWT Token: $token")
         }
+    }
+
+    // Error Dialog
+    if (showErrorDialog) {
+        AlertDialog(
+            onDismissRequest = { showErrorDialog = false },
+            confirmButton = {
+                TextButton(onClick = { showErrorDialog = false }) {
+                    Text("OK")
+                }
+            },
+            title = { Text("Login Failed") },
+            text = { Text(errorMessage) }
+        )
     }
 }
