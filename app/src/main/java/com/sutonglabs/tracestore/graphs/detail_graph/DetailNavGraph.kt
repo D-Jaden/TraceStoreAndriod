@@ -16,7 +16,10 @@ fun NavGraphBuilder.detailNavGraph(navController: NavHostController) {
         startDestination = DetailScreen.ProductDetailScreen.route + "/{${Constrains.PRODUCT_ID_PARAM}}"
     ) {
         composable(DetailScreen.CartScreen.route) {
-            CartScreen()
+            CartScreen(onItemClick = { productId ->
+                // Navigate to the detail screen or handle the item click logic
+                navController.navigate("productDetail/$productId")
+            })
         }
         composable(DetailScreen.NotificationScreen.route) {
             NotificationScreen()
