@@ -1,7 +1,6 @@
 package com.sutonglabs.tracestore.di
 
 import com.sutonglabs.tracestore.api.TraceStoreAPI
-import com.sutonglabs.tracestore.data.DemoDB
 import com.sutonglabs.tracestore.repository.CartRepository
 import com.sutonglabs.tracestore.repository.CartRepositoryImp
 import com.sutonglabs.tracestore.repository.ProductRepository

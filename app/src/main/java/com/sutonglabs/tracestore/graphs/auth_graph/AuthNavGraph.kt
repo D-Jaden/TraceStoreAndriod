@@ -21,48 +21,44 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController, context: Cont
         route = Graph.AUTHENTICATION,
         startDestination = AuthScreen.OnBoardingScreen.route
     ) {
+        // Splash Screen
         composable(route = AuthScreen.OnBoardingScreen.route) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 (context as Activity).window.decorView.windowInsetsController?.hide(
                     WindowInsets.Type.statusBars()
-                );
+                )
             } else {
                 (context as Activity).window.setFlags(
                     WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN
                 )
             }
-            SplashScreen(navController) //
+            SplashScreen(navController)
             Log.d("Navigation Call", "Called Splash Screen")
         }
+
+        // Login Screen
         composable(AuthScreen.SignInScreen.route) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 (context as Activity).window.decorView.windowInsetsController?.show(
                     WindowInsets.Type.statusBars()
-                );
+                )
             } else {
                 (context as Activity).window.apply {
-                    clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
                     clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
                 }
             }
             LoginScreen(navController = navController)
         }
+
+        // Registration Screen
         composable(AuthScreen.SignUpScreen.route) {
-            RegisterScreen(navController =navController )
-        }
-//        composable(AuthScreen.ForgetPasswordScreen.route) {
-//            ForgetPasswordScreen(navController = navController)
-//        }
-//        composable(AuthScreen.OTPScreen.route) {
-//            OTPScreen(navController = navController)
-//        }
-//        composable(AuthScreen.SignUpScreen.route) {
-//            SignUpScreen(navController = navController)
-//        }
-        composable(AuthScreen.SignInSuccess.route) {
-            HomeScreen()
+            RegisterScreen(navController = navController)
         }
 
+        // Home Screen after Sign In Success
+        composable(AuthScreen.SignInSuccess.route) {
+            HomeScreen(context = context) // Pass the context to HomeScreen
+        }
     }
 }

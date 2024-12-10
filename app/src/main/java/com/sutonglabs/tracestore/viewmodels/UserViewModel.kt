@@ -2,6 +2,7 @@ package com.sutonglabs.tracestore.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sutonglabs.tracestore.models.User
 import com.sutonglabs.tracestore.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +21,11 @@ open class UserViewModel @Inject constructor(
     private val _registerState = MutableStateFlow<Result<String>?>(null)
     val loginState: StateFlow<Result<String>?> = _loginState
     val registerState: StateFlow<Result<String>?> = _registerState
+    private val _updateState = MutableStateFlow<Result<User>?>(null)
+    val updateState: StateFlow<Result<User>?> = _updateState
 
+    private val _deleteState = MutableStateFlow<Result<Unit>?>(null)
+    val deleteState: StateFlow<Result<Unit>?> = _deleteState
     fun login(username: String, password: String) {
         viewModelScope.launch {
             _loginState.value = userRepository.login(username, password)
@@ -37,6 +42,9 @@ open class UserViewModel @Inject constructor(
             _registerState.value = userRepository.register(username, email, firstName, lastName, age, GSTIN, password)
         }
     }
+
+
+
     val jwtToken: StateFlow<String?> = userRepository.jwtToken
         .stateIn(viewModelScope, SharingStarted.Lazily, null)
 }

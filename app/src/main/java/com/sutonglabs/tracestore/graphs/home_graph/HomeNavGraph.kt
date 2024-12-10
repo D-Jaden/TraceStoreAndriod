@@ -1,5 +1,6 @@
 package com.sutonglabs.tracestore.graphs.home_graph
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -13,16 +14,15 @@ import com.sutonglabs.tracestore.ui.favourite_screen.FavouriteScreen
 import com.sutonglabs.tracestore.ui.profile_screen.ProfileScreen
 
 @Composable
-fun HomeNavGraph(navHostController: NavHostController) {
+fun HomeNavGraph(navHostController: NavHostController, context: Context) {
     NavHost(
         navController = navHostController,
         route = Graph.HOME,
-        startDestination = ShopHomeScreen.DashboardScreen.route //ShopHomeScreen.DashboardScreen.route
+        startDestination = ShopHomeScreen.DashboardScreen.route
     ) {
         composable(ShopHomeScreen.DashboardScreen.route) {
-            DashboardScreen() { productId ->
+            DashboardScreen { productId ->
                 navHostController.navigate(DetailScreen.ProductDetailScreen.route + "/$productId")
-
             }
         }
         composable(ShopHomeScreen.FavouriteScreen.route) {
@@ -32,13 +32,11 @@ fun HomeNavGraph(navHostController: NavHostController) {
             ConversationScreen()
         }
         composable(ShopHomeScreen.ProfileScreen.route) {
-            ProfileScreen() {
+            ProfileScreen(context = context) {
                 navHostController.popBackStack()
             }
         }
-        //detail graph
+        // Detail graph
         detailNavGraph(navController = navHostController)
-
     }
 }
-

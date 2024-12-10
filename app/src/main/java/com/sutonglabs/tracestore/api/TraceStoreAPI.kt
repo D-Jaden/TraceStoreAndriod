@@ -7,6 +7,7 @@ import com.sutonglabs.tracestore.models.ProductDetailResponse
 import retrofit2.Response
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -31,6 +32,15 @@ interface TraceStoreAPI {
         @Header("Authorization") authHeader: String
     ): Response<ProductDetailResponse>
 
+    @GET("user")
+    suspend fun getUserInfo(@Header("Authorization") token: String): Response<User>
+
+    @POST("user/update")
+    suspend fun updateUser(@Body user: User, @Header("Authorization") token: String): Response<User>
+
+    @DELETE("user/{id}")
+    suspend fun deleteUser(@Path("id") id: Int, @Header("Authorization") token: String): Response<Unit>
+
     @GET("cart")
     fun getCart(@Header("Authorization") token: String): Call<CartResponse>
 
@@ -39,6 +49,5 @@ interface TraceStoreAPI {
         @Body request: AddToCartRequest,
         @Header("Authorization") token: String
     ): Response<CartResponse>
-
-
 }
+
