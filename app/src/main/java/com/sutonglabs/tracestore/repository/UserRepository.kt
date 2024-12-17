@@ -4,6 +4,7 @@ import android.content.Context
 import com.sutonglabs.tracestore.api.LoginRequest
 import com.sutonglabs.tracestore.api.RegisterRequest
 import com.sutonglabs.tracestore.api.TraceStoreAPI
+import com.sutonglabs.tracestore.api.User
 import com.sutonglabs.tracestore.data.getJwtToken
 import com.sutonglabs.tracestore.data.saveJwtToken
 import kotlinx.coroutines.flow.Flow
@@ -16,6 +17,16 @@ class UserRepository @Inject constructor(
     private val context: Context
 ) {
     val jwtToken: Flow<String?> = getJwtToken(context)
+
+    suspend fun getUserInfo(token: String): Result<User> {
+        val response = apiService.getUserInfo(token)
+        return if (response.isSuccessful && response.body() != null) {
+            Result.success(response.body()!!)
+        } else {
+            Result.failure(Exception("Failed to fetch user info"))
+        }
+    }
+
 
     suspend fun login(username: String, password: String): Result<String> {
         val response = apiService.login(LoginRequest(username, password))

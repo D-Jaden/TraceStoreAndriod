@@ -1,6 +1,7 @@
 package com.sutonglabs.tracestore.ui.profile_screen
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
@@ -23,6 +24,13 @@ fun ProfileScreen(context: Context, onBackBtnClick: () -> Unit) {
 
     // Decode the JWT token to extract user info
     val userInfo = jwtToken?.let { decodeJwt(it) }
+
+    userInfo?.let {
+        val username = it.optString("username") ?: "Unknown User"
+        val email = it.optString("email") ?: "Email not available"
+        Log.d("ProfileScreen", "Username: $username")
+        Log.d("ProfileScreen", "Email: $email")
+    }
 
     Column(
         modifier = Modifier

@@ -1,5 +1,6 @@
 package com.sutonglabs.tracestore.graphs.home_graph
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -14,7 +15,7 @@ import com.sutonglabs.tracestore.ui.favourite_screen.FavouriteScreen
 import com.sutonglabs.tracestore.ui.profile_screen.ProfileScreen
 
 @Composable
-fun HomeNavGraph(navHostController: NavHostController) {
+fun HomeNavGraph(context: Context, navHostController: NavHostController) {
     NavHost(
         navController = navHostController,
         route = Graph.HOME,
@@ -33,7 +34,7 @@ fun HomeNavGraph(navHostController: NavHostController) {
             ConversationScreen()
         }
         composable(ShopHomeScreen.ProfileScreen.route) {
-            ProfileScreen() {
+            ProfileScreen(context = context) {
                 navHostController.popBackStack()
             }
         }
