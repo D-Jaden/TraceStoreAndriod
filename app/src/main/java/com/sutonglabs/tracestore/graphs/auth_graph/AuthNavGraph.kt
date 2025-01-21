@@ -15,8 +15,13 @@ import com.sutonglabs.tracestore.ui.home_screen.HomeScreen
 import com.sutonglabs.tracestore.ui.login.LoginScreen
 import com.sutonglabs.tracestore.ui.onboarding_screen.SplashScreen
 import com.sutonglabs.tracestore.ui.signup.RegisterScreen
+import com.sutonglabs.tracestore.repository.ProductRepository
 
-fun NavGraphBuilder.authNavGraph(navController: NavHostController, context: Context) {
+fun NavGraphBuilder.authNavGraph(
+    navController: NavHostController,
+    context: Context,
+    productRepository: ProductRepository // Accept productRepository here
+) {
     navigation(
         route = Graph.AUTHENTICATION,
         startDestination = AuthScreen.OnBoardingScreen.route
@@ -58,7 +63,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController, context: Cont
 
         // Home Screen after Sign In Success
         composable(AuthScreen.SignInSuccess.route) {
-            HomeScreen(context = context) // Pass the context to HomeScreen
+            HomeScreen(context = context, productRepository = productRepository) // Pass productRepository here
         }
     }
 }

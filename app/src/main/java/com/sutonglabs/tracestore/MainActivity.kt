@@ -12,11 +12,16 @@ import com.sutonglabs.tracestore.graphs.root_graph.RootNavigationGraph
 import com.sutonglabs.tracestore.ui.theme.TraceStoreTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import com.sutonglabs.tracestore.repository.ProductRepository
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     @Inject
     lateinit var apiService: TraceStoreAPI
+
+    @Inject
+    lateinit var productRepository: ProductRepository // Inject ProductRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +35,10 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun ShowScreen(context: Context) {
         val navHostController = rememberNavController()
-        RootNavigationGraph(navHostController = navHostController, context = context)
+        RootNavigationGraph(
+            navHostController = navHostController,
+            context = context,
+            productRepository = productRepository // Pass productRepository
+        )
     }
 }

@@ -12,13 +12,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
-import com.sutonglabs.tracestore.graphs.Graph
-import com.sutonglabs.tracestore.graphs.detail_graph.DetailScreen
 import com.sutonglabs.tracestore.graphs.home_graph.HomeNavGraph
 import com.sutonglabs.tracestore.ui.home_screen.components.NavigationBar
+import com.sutonglabs.tracestore.repository.ProductRepository
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.sutonglabs.tracestore.graphs.detail_graph.DetailScreen
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
 @Composable
-fun HomeScreen(context: Context) {
+fun HomeScreen(context: Context, productRepository: ProductRepository) {
     val navController = rememberNavController()
     val snackbarHostState = remember { SnackbarHostState() }
     val boxScrollState = rememberScrollState()
@@ -54,16 +57,10 @@ fun HomeScreen(context: Context) {
                 .verticalScroll(boxScrollState)
         ) {
             Column {
-
-                // Pass context to HomeNavGraph
-                HomeNavGraph(navHostController = navController, context = context)
+                // Pass context and productRepository to HomeNavGraph
+                HomeNavGraph(navHostController = navController, context = context, productRepository = productRepository)
             }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    HomeScreen(context = androidx.compose.ui.platform.LocalContext.current)
-}

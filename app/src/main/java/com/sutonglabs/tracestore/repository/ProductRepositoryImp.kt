@@ -39,10 +39,9 @@ class ProductRepositoryImp @Inject constructor(
         val token = getJwtToken(context).first()  // Assuming the token is being fetched correctly
         try {
             val response = traceStoreApiService.getProductDetail(id, "Bearer $token")
-
             if (response.isSuccessful) {
                 val productDetailResponse = response.body()
-                return productDetailResponse?.data  // Return the single product from the response
+                return productDetailResponse?.data
             } else {
                 Log.e("ProductRepository", "Error fetching product detail: ${response.errorBody()?.string()}")
             }
@@ -52,5 +51,15 @@ class ProductRepositoryImp @Inject constructor(
         return null
     }
 
-
+    override suspend fun addProduct(product: Product): Product? {
+        try {
+            val response = traceStoreApiService.addProduct(product)
+            if (response.isSuccessful) {
+                return response.body()
+            }
+        } catch (e: Exception) {
+            Log.e("ProductRepository", "Error adding product: ${e.localizedMessage}")
+        }
+        return null
+    }
 }

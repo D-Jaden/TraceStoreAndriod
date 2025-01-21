@@ -7,5 +7,5 @@ import com.sutonglabs.tracestore.models.ProductResponse
 interface ProductRepository {
     suspend fun getProduct(): ProductResponse
     suspend fun getProductDetail(id: Int, context: Context): Product?
-
+    suspend fun addProduct(product: Product): Product?
 }

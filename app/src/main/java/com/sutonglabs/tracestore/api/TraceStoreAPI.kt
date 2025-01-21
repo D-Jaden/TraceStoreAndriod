@@ -1,11 +1,6 @@
 package com.sutonglabs.tracestore.api
 
-import com.sutonglabs.tracestore.models.AddToCartRequest
-import com.sutonglabs.tracestore.models.Address
-import com.sutonglabs.tracestore.models.AddressResponse
-import com.sutonglabs.tracestore.models.CartResponse
-import com.sutonglabs.tracestore.models.ProductResponse
-import com.sutonglabs.tracestore.models.ProductDetailResponse
+import com.sutonglabs.tracestore.models.*
 import retrofit2.Response
 import retrofit2.Call
 import retrofit2.http.Body
@@ -54,5 +49,7 @@ interface TraceStoreAPI {
         @Body request: AddToCartRequest,
         @Header("Authorization") token: String
     ): Response<CartResponse>
-}
 
+    @POST("product/add")
+    suspend fun addProduct(@Body product: Product): Response<Product>
+}
