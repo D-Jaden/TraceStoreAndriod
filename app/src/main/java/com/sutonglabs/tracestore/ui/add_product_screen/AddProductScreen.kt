@@ -7,13 +7,11 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.clickable
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.sutonglabs.tracestore.viewmodels.AddProductViewModel
@@ -24,10 +22,10 @@ import okhttp3.MultipartBody
 import java.io.File
 import com.sutonglabs.tracestore.models.Category
 import okhttp3.RequestBody.Companion.asRequestBody
-import androidx.compose.ui.unit.dp  // Import for dp
-import androidx.compose.material3.MaterialTheme // Import for typography
+import androidx.compose.ui.unit.dp
 import com.sutonglabs.tracestore.models.ProductCreate
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddProductScreen(
     navHostController: NavHostController,
@@ -39,8 +37,8 @@ fun AddProductScreen(
     var productPrice by remember { mutableStateOf(TextFieldValue()) }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     var selectedCategory by remember { mutableStateOf<Category?>(null) }
+    var expanded by remember { mutableStateOf(false) }
 
-    // List of categories
     val categories = listOf(
         Category(1, "Food Crops"),
         Category(2, "Clothing"),
@@ -56,19 +54,12 @@ fun AddProductScreen(
         onResult = { uri: Uri? -> selectedImageUri = uri }
     )
 
-    // Handle add product status and show a toast
     LaunchedEffect(addProductStatus) {
         if (addProductStatus != null) {
-            if (addProductStatus) {
-                Toast.makeText(context, "Product added successfully!", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "Failed to add product", Toast.LENGTH_SHORT).show()
-            }
+            val message = if (addProductStatus) "Product added successfully!" else "Failed to add product"
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
     }
-
-    // State to control dropdown visibility
-    var expanded by remember { mutableStateOf(true) }
 
     Column(
         modifier = Modifier
@@ -76,7 +67,6 @@ fun AddProductScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Product Name Field
         TextField(
             value = productName,
             onValueChange = { productName = it },
@@ -84,7 +74,6 @@ fun AddProductScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Product Description Field
         TextField(
             value = productDescription,
             onValueChange = { productDescription = it },
@@ -92,7 +81,6 @@ fun AddProductScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Product Price Field
         TextField(
             value = productPrice,
             onValueChange = { productPrice = it },
@@ -100,39 +88,37 @@ fun AddProductScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Dropdown for selecting category
-        Box(modifier = Modifier.fillMaxWidth()) {
-            TextField(
+        // Category Dropdown
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded }
+        ) {
+            OutlinedTextField(
                 value = selectedCategory?.name ?: "Select Category",
                 onValueChange = {},
-                label = { Text("Category") },
                 readOnly = true,
+                label = { Text("Category") },
                 modifier = Modifier
+                    .menuAnchor()
                     .fillMaxWidth()
-                    .clickable { expanded = !expanded } // Toggle dropdown visibility when clicked
             )
 
-            // Dropdown menu for categories
-            DropdownMenu(
+            ExposedDropdownMenu(
                 expanded = expanded,
-                onDismissRequest = { expanded = false },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .zIndex(1f) // Ensure dropdown is above other UI elements
+                onDismissRequest = { expanded = false }
             ) {
                 categories.forEach { category ->
                     DropdownMenuItem(
                         text = { Text(category.name) },
                         onClick = {
                             selectedCategory = category
-                            expanded = false // Close dropdown after selection
+                            expanded = false
                         }
                     )
                 }
             }
         }
 
-        // Button for selecting the image
         Button(
             onClick = { pickImageLauncher.launch("image/*") },
             modifier = Modifier.fillMaxWidth()
@@ -140,51 +126,33 @@ fun AddProductScreen(
             Text("Select Image")
         }
 
-        // Display image selection status
-        if (selectedImageUri != null) {
-            Text(
-                text = "Image Selected: ${selectedImageUri?.lastPathSegment}",
-                style = MaterialTheme.typography.bodyLarge, // Corrected typography style
-                modifier = Modifier.fillMaxWidth()
-            )
-        } else {
-            Text(
-                text = "No image selected",
-                style = MaterialTheme.typography.bodyLarge, // Corrected typography style
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
+        Text(
+            text = selectedImageUri?.lastPathSegment ?: "No image selected",
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.fillMaxWidth()
+        )
 
-        // Button for submitting the form
         Button(
             onClick = {
                 if (selectedImageUri != null && selectedCategory != null) {
-                    val imageFile = File(getFilePathFromUri(selectedImageUri!!, context)) // Convert URI to File
+                    val imageFile = File(getFilePathFromUri(selectedImageUri!!, context))
                     val requestBody = imageFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
                     val imagePart = MultipartBody.Part.createFormData("image", imageFile.name, requestBody)
 
-                    // Log the image file path
                     Log.d("AddProductScreen", "Uploading image: ${imageFile.absolutePath}")
 
-                    // Upload the image first
                     addProductViewModel.uploadImage(imagePart)?.let { imageResponse ->
-                        // Assuming the response contains a URL or file path for the image
-                        val imageUrl = imageResponse.path // Adjust according to your actual response
-
-                        // Create the product object with the image URL
-                        val product =  ProductCreate(
+                        val imageUrl = imageResponse.path
+                        val product = ProductCreate(
                             name = productName.text,
                             description = productDescription.text,
                             price = productPrice.text.toIntOrNull() ?: 0,
-                            image = imageUrl, // Add the image URL to the product
-                            categoryIds = listOf(selectedCategory!!.id) // Wrap in a list for category IDs
+                            image = imageUrl,
+                            categoryIds = listOf(selectedCategory!!.id)
                         )
 
-                        // Log the full product payload
-                        Log.d("AddProductScreen", "Product payload with image: $product")
-
-                        // Call the method to upload the product and image
-                        addProductViewModel.addProduct(product,context)
+                        Log.d("AddProductScreen", "Product payload: $product")
+                        addProductViewModel.addProduct(product, context)
                     } ?: run {
                         Toast.makeText(context, "Image upload failed", Toast.LENGTH_SHORT).show()
                     }
@@ -199,14 +167,12 @@ fun AddProductScreen(
     }
 }
 
-
-// Function to get file path from URI
 fun getFilePathFromUri(uri: Uri, context: Context): String? {
     val cursor = context.contentResolver.query(uri, null, null, null, null)
-    cursor?.let {
+    cursor?.use {
         val columnIndex = it.getColumnIndex(android.provider.MediaStore.Images.Media.DATA)
         if (it.moveToFirst()) {
-            return it.getString(columnIndex) // Returns the absolute file path
+            return it.getString(columnIndex)
         }
     }
     return null
