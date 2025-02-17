@@ -15,9 +15,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -68,7 +73,12 @@ fun CartScreen(
         ) {
             state.product?.let { products ->
                 items(products) { product ->
-                    ProductCard(product.product, product.quantity, onItemClick)
+                    ProductCard(product.product,
+                        product.quantity,
+                        onItemClick,
+                        onQuantityChange = { newQuantity ->
+                            cartViewModel.updateCartItem(product.id, newQuantity)
+                        }  )
                 }
             }
         }
@@ -87,7 +97,11 @@ fun CartScreen(
 
 
 @Composable
-fun ProductCard(product: CartProduct, quantity: Int,  onItemClick: (Int) -> Unit) {
+fun ProductCard(product: CartProduct,
+                quantity: Int,
+                onItemClick: (Int) -> Unit,
+                onQuantityChange: (Int) -> Unit,
+    ) {
     Card(
         modifier = Modifier
             .padding(8.dp)
@@ -120,14 +134,30 @@ fun ProductCard(product: CartProduct, quantity: Int,  onItemClick: (Int) -> Unit
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Text(
-                    text = "Qty $quantity",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Text(
-                    text = "₹${product.price}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "₹${product.price}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.weight(1f)
+                    )
+                    IconButton(onClick = {
+                        if (quantity > 1) onQuantityChange(quantity - 1)
+                    }) {
+                        Icon(imageVector = Icons.Default.Remove, contentDescription = "Decrease")
+                    }
+                    Text(
+                        text = "$quantity",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                    )
+                    IconButton(onClick = {
+                        onQuantityChange(quantity + 1)
+                    }) {
+                        Icon(imageVector = Icons.Default.Add, contentDescription = "Increase")
+                    }
+                }
             }
         }
     }

@@ -39,7 +39,6 @@ class ProductRepositoryImp @Inject constructor(
         val token = getJwtToken(context).first()  // Assuming the token is being fetched correctly
         try {
             val response = traceStoreApiService.getProductDetail(id, "Bearer $token")
-
             if (response.isSuccessful) {
                 val productDetailResponse = response.body()
                 return productDetailResponse?.data  // Return the single product from the response
@@ -51,6 +50,4 @@ class ProductRepositoryImp @Inject constructor(
         }
         return null
     }
-
-
 }

@@ -37,6 +37,18 @@ class CartRepositoryImp @Inject constructor(
         }
     }
 
+    override suspend fun removeFromCart(productId: Int, token: String): CartResponse {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun addQuantity(productId: Int, token: String): CartResponse {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun removeQuantity(productId: Int, token: String): CartResponse {
+        TODO("Not yet implemented")
+    }
+
     // Function to extract userId from JWT token
     private fun getUserIdFromToken(token: String): Int {
         val decodedToken = decodeJwt(token)

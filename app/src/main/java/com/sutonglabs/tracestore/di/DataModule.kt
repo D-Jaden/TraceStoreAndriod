@@ -6,6 +6,8 @@ import com.sutonglabs.tracestore.repository.AddressRepository
 import com.sutonglabs.tracestore.repository.AddressRepositoryImp
 import com.sutonglabs.tracestore.repository.CartRepository
 import com.sutonglabs.tracestore.repository.CartRepositoryImp
+import com.sutonglabs.tracestore.repository.OrderRepository
+import com.sutonglabs.tracestore.repository.OrderRepositoryImp
 import com.sutonglabs.tracestore.repository.ProductRepository
 import com.sutonglabs.tracestore.repository.ProductRepositoryImp
 import dagger.Module
@@ -33,9 +35,15 @@ object DataModule {
 
     @Provides
     fun provideAddressRepository(
-        // Add dependencies if necessary, e.g., DAOs, Retrofit services, etc.
         traceStoreAPIService: TraceStoreAPI
     ): AddressRepository {
         return AddressRepositoryImp(traceStoreAPIService)
+    }
+
+    @Provides
+    fun provideOrderRepository(
+        traceStoreAPIService: TraceStoreAPI
+    ): OrderRepository {
+        return OrderRepositoryImp(traceStoreAPIService)
     }
 }

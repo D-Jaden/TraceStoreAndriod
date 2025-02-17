@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.sutonglabs.tracestore.graphs.Graph
 import com.sutonglabs.tracestore.graphs.cart_graph.cartNavGraph
+import com.sutonglabs.tracestore.graphs.checkout_graph.checkoutNavGraph
 import com.sutonglabs.tracestore.graphs.detail_graph.DetailScreen
 import com.sutonglabs.tracestore.graphs.detail_graph.detailNavGraph
 import com.sutonglabs.tracestore.ui.conversation_screen.ConversationScreen
@@ -41,6 +42,7 @@ fun HomeNavGraph(navHostController: NavHostController) {
         detailNavGraph(navController = navHostController)
         cartNavGraph(navController = navHostController)
 
+//        checkoutNavGraph(navController = navHostController)
     }
 }
 

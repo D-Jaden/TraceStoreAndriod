@@ -6,4 +6,6 @@ object Graph {
     const val HOME = "home_graph"
     const val DETAILS = "details_graph"
     const val CART = "cart_graph"
+    const val CHECKOUT = "checkout_graph"
+    const val EDIT_ADDRESS = "edit_address_graph"
 }

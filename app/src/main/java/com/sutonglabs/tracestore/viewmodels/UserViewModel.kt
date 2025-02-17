@@ -2,6 +2,8 @@ package com.sutonglabs.tracestore.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.sutonglabs.tracestore.api.User
 import com.sutonglabs.tracestore.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,10 +18,24 @@ open class UserViewModel @Inject constructor(
     private val userRepository: UserRepository
 ) : ViewModel() {
 
+    private val _user = MutableStateFlow<Result<Int>?>(null)
+    val user: StateFlow<Result<Int>?> = _user
+
     private val _loginState = MutableStateFlow<Result<String>?>(null)
     private val _registerState = MutableStateFlow<Result<String>?>(null)
     val loginState: StateFlow<Result<String>?> = _loginState
     val registerState: StateFlow<Result<String>?> = _registerState
+
+    init {
+        viewModelScope.launch {
+            setUser()
+        }
+    }
+    private fun setUser() {
+        viewModelScope.launch {
+            _user.value = userRepository.getUser()
+        }
+    }
 
     fun login(username: String, password: String) {
         viewModelScope.launch {
