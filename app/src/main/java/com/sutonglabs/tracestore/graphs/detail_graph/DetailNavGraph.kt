@@ -35,7 +35,7 @@ fun NavGraphBuilder.detailNavGraph(navController: NavHostController) {
     ) {
         composable(DetailScreen.CartScreen.route) {
             // Pass token and context when navigating
-            CartScreenWithContext { productId, token, context ->
+            CartScreenWithContext { productId, token, _ ->
                 navController.navigate("productDetail/$productId/$token")
             }
         }
