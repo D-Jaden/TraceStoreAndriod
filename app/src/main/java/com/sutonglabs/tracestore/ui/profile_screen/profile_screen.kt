@@ -83,6 +83,8 @@ fun ProfileScreen(
         ) {
             Text(text = "Back", fontSize = 18.sp, fontWeight = FontWeight.Bold)
         }
+
+        // Update Profile Button
         Button(
             onClick = {
                 // Navigate to the update screen
@@ -96,33 +98,34 @@ fun ProfileScreen(
             Text(text = "Update Profile", fontSize = 18.sp, fontWeight = FontWeight.Bold)
         }
 
-    }
-    Button(
-        onClick = {
-            userViewModel.logout(context)
+        Spacer(modifier = Modifier.height(16.dp))
 
-            navController.navigate(Graph.AUTHENTICATION) {
-                // Pop everything above the 'auth_graph' route
-                popUpTo(Graph.ROOT) {
-                    inclusive = true
+        // Logout Button (moved inside the Column)
+        Button(
+            onClick = {
+                userViewModel.logout(context)
+
+                navController.navigate(Graph.AUTHENTICATION) {
+                    // Pop everything above the 'auth_graph' route
+                    popUpTo(Graph.ROOT) {
+                        inclusive = true
+                    }
+                    launchSingleTop = true
                 }
-                launchSingleTop = true
-            }
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
-    ) {
-        Text(
-            text = "Logout",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White
-        )
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+        ) {
+            Text(
+                text = "Logout",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
+        }
     }
-
-
 }
 
 // Helper function for displaying profile details in a row format
