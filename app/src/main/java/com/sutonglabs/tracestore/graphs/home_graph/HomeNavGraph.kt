@@ -15,6 +15,7 @@ import com.sutonglabs.tracestore.ui.favourite_screen.FavouriteScreen
 import com.sutonglabs.tracestore.ui.profile_screen.ProfileScreen
 import com.sutonglabs.tracestore.ui.order_screen.OrderScreen // Import your OrdersScreen
 import com.sutonglabs.tracestore.repository.ProductRepository
+import com.sutonglabs.tracestore.ui.seller.SellerOrdersScreen
 import com.sutonglabs.tracestore.ui.seller_dashboard_screen.SellerDashboardScreen
 import com.sutonglabs.tracestore.ui.seller_dashboard_screen.SellerProductListScreen
 import com.sutonglabs.tracestore.ui.update_profile_screen.UpdateProfileScreen
@@ -63,8 +64,21 @@ fun HomeNavGraph(
             UpdateProfileScreen(navController = navHostController)
         }
         composable("seller_product_list") {
-            SellerProductListScreen(navController = navHostController, userViewModel = userViewModel)
+            SellerProductListScreen(
+                navController = navHostController,
+                userViewModel = userViewModel
+            ) { productId ->
+                navHostController.navigate(DetailScreen.ProductDetailScreen.route + "/$productId")
+            }
         }
+
+
+        composable("seller_orders_screen") {
+            SellerOrdersScreen(onProductClick = { productId ->
+                navHostController.navigate(DetailScreen.ProductDetailScreen.route + "/$productId")
+            })
+        }
+
 
         // detail and cart graphs
         detailNavGraph(navController = navHostController)

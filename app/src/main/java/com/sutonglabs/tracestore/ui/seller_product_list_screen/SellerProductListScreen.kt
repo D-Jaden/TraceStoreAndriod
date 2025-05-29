@@ -1,6 +1,7 @@
 package com.sutonglabs.tracestore.ui.seller_dashboard_screen
 
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -13,7 +14,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.sutonglabs.tracestore.models.Product
-import com.sutonglabs.tracestore.api.TraceStoreAPI
 import com.sutonglabs.tracestore.services.RetrofitInstance
 import com.sutonglabs.tracestore.viewmodels.UserViewModel
 
@@ -21,10 +21,10 @@ import com.sutonglabs.tracestore.viewmodels.UserViewModel
 @Composable
 fun SellerProductListScreen(
     navController: NavController,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    onProductClick: (Int) -> Unit // Callback to navigate to product detail
 ) {
     val jwtToken: String = userViewModel.jwtToken.collectAsState().value ?: ""
-
     val context = LocalContext.current
 
     var products by remember { mutableStateOf<List<Product>>(emptyList()) }
@@ -59,7 +59,6 @@ fun SellerProductListScreen(
             )
         }
     ) { paddingValues ->
-
         if (isLoading) {
             Box(
                 modifier = Modifier
@@ -86,7 +85,9 @@ fun SellerProductListScreen(
                         .padding(paddingValues)
                 ) {
                     items(products) { product ->
-                        ProductCard(product = product)
+                        ProductCard(product = product) {
+                            onProductClick(product.id)
+                        }
                     }
                 }
             }
@@ -95,11 +96,12 @@ fun SellerProductListScreen(
 }
 
 @Composable
-fun ProductCard(product: Product) {
+fun ProductCard(product: Product, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clickable { onClick() },
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         shape = MaterialTheme.shapes.medium
@@ -109,7 +111,10 @@ fun ProductCard(product: Product) {
             Spacer(modifier = Modifier.height(4.dp))
             Text(text = product.description, style = MaterialTheme.typography.bodyMedium)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "Price: ${product.price} ${product.priceUnit.uppercase()}", style = MaterialTheme.typography.bodySmall)
+            Text(
+                text = "Price: ₹${product.price} ${product.priceUnit.uppercase()}",
+                style = MaterialTheme.typography.bodySmall
+            )
         }
     }
 }

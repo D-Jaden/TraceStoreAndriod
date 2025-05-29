@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sutonglabs.tracestore.api.request_models.CreateOrderRequest
 import com.sutonglabs.tracestore.api.response_model.Order
+import com.sutonglabs.tracestore.models.SellerOrderResponse
 import com.sutonglabs.tracestore.repository.OrderRepository
 import com.sutonglabs.tracestore.viewmodels.state.CreateOrderState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -58,5 +59,24 @@ class OrderViewModel @Inject constructor(
             }
         }
     }
+
+    private val _sellerOrders = MutableStateFlow<List<SellerOrderResponse>>(emptyList())
+    val sellerOrders: StateFlow<List<SellerOrderResponse>> = _sellerOrders
+
+    fun fetchSellerOrders(context: Context) {
+        viewModelScope.launch {
+            try {
+                val response = orderRepository.getSellerOrders(context)
+                _sellerOrders.value = response
+                Log.d("OrderViewModel", "Seller orders fetched: ${response.size}")
+            } catch (e: Exception) {
+                _errorMessage.value = e.message
+                Log.e("OrderViewModel", "Error fetching seller orders: ${e.message}")
+            }
+        }
+    }
+
+
+
 }
 

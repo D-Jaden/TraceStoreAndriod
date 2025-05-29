@@ -120,5 +120,11 @@ interface TraceStoreAPI {
         @Header("Authorization") token: String
     ): ProductResponse
 
+    @GET("order/seller-orders")
+    suspend fun getSellerOrders(
+        @Header("Authorization") token: String
+    ): Response<SellerOrdersResponseWrapper>
+
+
 }
 

@@ -7,6 +7,7 @@ import com.sutonglabs.tracestore.api.response_model.CreateOrderResponse
 import com.sutonglabs.tracestore.api.response_model.Order
 import com.sutonglabs.tracestore.api.response_model.OrderItem
 import com.sutonglabs.tracestore.data.getJwtToken
+import com.sutonglabs.tracestore.models.SellerOrderResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
@@ -42,5 +43,16 @@ class OrderRepositoryImp @Inject constructor(
         }
     }
 
+    override suspend fun getSellerOrders(context: Context): List<SellerOrderResponse> {
+        val token = getJwtToken(context).first()
+        return withContext(Dispatchers.IO) {
+            val response = traceStoreApiService.getSellerOrders("Bearer $token")
+            if (response.isSuccessful && response.body() != null) {
+                response.body()!!.data  // or response.body()!! if it's a List directly
+            } else {
+                throw Exception("Failed to fetch seller orders. ${response.errorBody()?.string()}")
+            }
+        }
+    }
 
 }

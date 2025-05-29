@@ -62,8 +62,10 @@ fun SellerDashboardScreen(navController: NavController) {
             DashboardCard(
                 title = "View Orders",
                 icon = Icons.AutoMirrored.Filled.ReceiptLong,
-                onClick = { navController.navigate("order_screen") }
+                onClick = { navController.navigate("seller_orders_screen")
+                }
             )
+
             DashboardCard(
                 title = "Payment History",
                 icon = Icons.Default.Payments,
