@@ -23,6 +23,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -46,6 +50,7 @@ fun CheckoutScreen(
     context: Context
 ){
     val addressState = addressViewModel.state.value
+    val orderState = orderViewModel.state.value
 
     val updatedFlag = navController.currentBackStackEntry
         ?.savedStateHandle
@@ -58,6 +63,17 @@ fun CheckoutScreen(
                 addressViewModel.getAddress()
                 navController.currentBackStackEntry?.savedStateHandle?.remove<Boolean>("addressUpdated")
             }
+        }
+    }
+
+    // Navigate to order created screen if order creation succeeded
+    LaunchedEffect(orderState.isSuccess) {
+        if (orderState.isSuccess) {
+            navController.navigate("order_created_screen") {
+                popUpTo("checkout_screen") { inclusive = true }
+            }
+            // Optionally reset order state here if you have implemented such function
+            // orderViewModel.resetState()
         }
     }
 
@@ -110,13 +126,14 @@ fun CheckoutScreen(
 
                 Button(
                     onClick = {
-                        // Pass selected address ID to PaymentScreen via savedStateHandle
-                        navController.currentBackStackEntry?.savedStateHandle?.set("selectedAddressId", address.id)
-                        navController.navigate("payment_screen")
+                        val request = generateCreateOrderRequest(cartViewModel, address.id)
+                        if (request != null) {
+                            orderViewModel.createOrder(request, context)
+                        }
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "Proceed to Payment")
+                    Text(text = "Confirm Order")
                 }
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -125,22 +142,20 @@ fun CheckoutScreen(
     }
 }
 
-
 @Composable
 fun AddressCard(
-                address: Address,
-                navController: NavController,
-                name: String,
-                phoneNumber: String,
-                pincode: String,
-                city: String,
-                stateName: String,
-                locality: String,
-                buildingName: String,
-                landmark: String,
-                modifier: Modifier = Modifier,
-                ) {
-
+    address: Address,
+    navController: NavController,
+    name: String,
+    phoneNumber: String,
+    pincode: String,
+    city: String,
+    stateName: String,
+    locality: String,
+    buildingName: String,
+    landmark: String,
+    modifier: Modifier = Modifier,
+) {
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -201,7 +216,6 @@ fun AddressCard(
                         navController.navigate("edit_address_screen")
                     }
                 },
-//                modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "Edit Address")
             }
@@ -221,23 +235,30 @@ fun AddressCard(
     }
 }
 
-
 @SuppressLint("SuspiciousIndentation")
 fun generateCreateOrderRequest(cartViewModel: CartViewModel, addressID: Int): CreateOrderRequest? {
     val products = cartViewModel.state.value.product?.map {
         Product(
-            productID = it.productId.toString(),
-            quantity = it.quantity.toString()
+            productID = it.product.id,  // Use 'it.product.id' to match DB ID
+            quantity = it.quantity
         )
     }
+
+    products?.forEach {
+        Log.d("CheckoutDebug", "Sending productID: ${it.productID}, quantity: ${it.quantity}")
+    }
+
     val totalAmount = cartViewModel.state.value.product?.sumOf {
-        it.product.price * it.quantity
-    }.toString()
-        return products?.let {
-            CreateOrderRequest(
+        (it.product.price.toDouble()) * it.quantity.toDouble()
+    } ?: 0.0
+
+    return products?.let {
+        CreateOrderRequest(
             products = it,
             totalAmount = totalAmount,
-            addressID = addressID
+            addressID = addressID,
+            status = "Success"
         )
     }
 }
+

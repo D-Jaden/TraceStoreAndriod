@@ -51,14 +51,6 @@ fun NavGraphBuilder.checkoutNavGraph(navController: NavHostController) {
         composable(CheckoutScreen.OrderCreatedScreen.route) {
             OrderCreatedScreen(navController = navController)
         }
-        composable("payment_screen") {
-            val context = LocalContext.current
-            PaymentScreen(
-                navController = navController,
-                context = context,
-                cartViewModel = hiltViewModel(),
-                orderViewModel = hiltViewModel()
-            )
-        }
+
     }
 }
