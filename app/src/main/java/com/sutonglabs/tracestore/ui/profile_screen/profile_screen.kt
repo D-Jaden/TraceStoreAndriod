@@ -17,13 +17,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.compose.ui.platform.LocalContext
 import com.sutonglabs.tracestore.graphs.Graph
+import com.sutonglabs.tracestore.graphs.auth_graph.AuthScreen
 import com.sutonglabs.tracestore.viewmodels.UserViewModel
 
 @Composable
 fun ProfileScreen(
     navController: NavController,
     userViewModel: UserViewModel = hiltViewModel(),
-    onBackBtnClick: () -> Unit
+    onBackBtnClick: () -> Unit,
+    onNavigateToAuth: () -> Unit,
 ) {
     // Access the context
     val context = LocalContext.current
@@ -105,13 +107,16 @@ fun ProfileScreen(
             onClick = {
                 userViewModel.logout(context)
 
-                navController.navigate(Graph.AUTHENTICATION) {
-                    // Pop everything above the 'auth_graph' route
-                    popUpTo(Graph.ROOT) {
-                        inclusive = true
-                    }
-                    launchSingleTop = true
-                }
+//                navController.navigate(Graph.AUTHENTICATION) {
+//                    // Pop everything above the 'auth_graph' route
+//                    popUpTo(Graph.ROOT) {
+//                        inclusive = true
+//                    }
+//                    launchSingleTop = true
+//                }
+
+                onNavigateToAuth()
+
             },
             modifier = Modifier
                 .fillMaxWidth()

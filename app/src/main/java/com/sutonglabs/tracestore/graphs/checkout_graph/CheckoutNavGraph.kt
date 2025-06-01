@@ -51,6 +51,5 @@ fun NavGraphBuilder.checkoutNavGraph(navController: NavHostController) {
         composable(CheckoutScreen.OrderCreatedScreen.route) {
             OrderCreatedScreen(navController = navController)
         }
-
     }
 }

@@ -18,16 +18,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.sutonglabs.tracestore.graphs.detail_graph.DetailScreen
 import com.sutonglabs.tracestore.graphs.home_graph.ShopHomeScreen
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add // <-- Added the import for Add icon
+import androidx.navigation.NavController
 
 @Composable
 fun NavigationBar(
-    navController: NavHostController,
+    navController: NavController,
     isVisible: (Boolean) -> Unit
 ) {
     val navItemList = listOf(

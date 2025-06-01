@@ -1,6 +1,7 @@
 package com.sutonglabs.tracestore.graphs.home_graph
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -25,12 +26,14 @@ import com.sutonglabs.tracestore.viewmodels.UserViewModel
 fun HomeNavGraph(
     navHostController: NavHostController,
     productRepository: ProductRepository,
-    userViewModel: UserViewModel   // add this param
+    userViewModel: UserViewModel,
+    onNavigateToAuth: () -> Unit,
 ) {
     NavHost(
         navController = navHostController,
         route = Graph.HOME,
-        startDestination = ShopHomeScreen.DashboardScreen.route    ) {
+        startDestination = ShopHomeScreen.DashboardScreen.route
+        ) {
         composable(ShopHomeScreen.DashboardScreen.route) {
             DashboardScreen() { productId ->
                 navHostController.navigate(DetailScreen.ProductDetailScreen.route + "/$productId")
@@ -43,9 +46,9 @@ fun HomeNavGraph(
             ConversationScreen()
         }
         composable(ShopHomeScreen.ProfileScreen.route) {
-            ProfileScreen(navController = navHostController) {
-                navHostController.popBackStack()
-            }
+            ProfileScreen(navController = navHostController,
+                onBackBtnClick = { navHostController.popBackStack() },
+                onNavigateToAuth = onNavigateToAuth)
         }
         composable("seller_dashboard_screen") {
             SellerDashboardScreen(navHostController)
@@ -83,5 +86,7 @@ fun HomeNavGraph(
         // detail and cart graphs
         detailNavGraph(navController = navHostController)
         cartNavGraph(navController = navHostController)
+
+
     }
 }
